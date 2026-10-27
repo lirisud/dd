@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>신청양식</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap');
+  :root{
+    --accent:#b48ec7;
+    --accent-dark:#7d5ba6;
+    --ink:#3a2e3f;
+    --line:#e6dcec;
+    --bg:#ffffff;
+    --soft:#faf5fb;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--ink);
+    font-family:'Noto Sans KR','Apple SD Gothic Neo','Malgun Gothic',sans-serif;
+    line-height:1.65;
+  }
+  .wrap{
+    width:min(720px,calc(100% - 24px));
+    margin:20px auto 40px;
+  }
+  .field{
+    border:1px solid var(--line);
+    border-radius:16px;
+    padding:18px;
+    margin-bottom:14px;
+    background:#fff;
+  }
+  .field label{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    margin-bottom:10px;
+    font-size:15px;
+    font-weight:700;
+    color:var(--accent-dark);
+  }
+  .field label::before{
+    content:"";
+    width:6px;
+    height:6px;
+    border-radius:50%;
+    background:var(--accent);
+  }
+  .field textarea{
+    display:block;
+    width:100%;
+    min-height:110px;
+    padding:13px 14px;
+    border:1px solid #e0d5e6;
+    border-radius:12px;
+    background:var(--soft);
+    color:var(--ink);
+    font-family:inherit;
+    font-size:14px;
+    line-height:1.7;
+    outline:none;
+    resize:none;          /* 직접 늘리는 대신 글 쓴 만큼 자동으로 늘어남 */
+    overflow:hidden;
+  }
+  .field textarea:focus{
+    border-color:var(--accent);
+    background:#fff;
+    box-shadow:0 0 0 3px rgba(180,142,199,.18);
+  }
+  .copy-btn{
+    display:block;
+    width:100%;
+    min-height:50px;
+    border:0;
+    border-radius:12px;
+    background:var(--accent-dark);
+    color:#fff;
+    font-family:inherit;
+    font-size:15px;
+    font-weight:700;
+    cursor:pointer;
+    transition:background .18s ease;
+  }
+  .copy-btn:hover{background:#6a4a92}
+  .copy-btn.copied{background:#4f8a5b}
+  @media(max-width:480px){
+    .wrap{margin-top:10px}
+    .field{padding:14px;border-radius:14px}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="field">
+    <label for="f-option">1. 의뢰 옵션</label>
+    <textarea id="f-option" placeholder="자유롭게 적어주세요"></textarea>
+  </div>
+
+  <div class="field">
+    <label for="f-qna">2. Q&amp;A</label>
+    <textarea id="f-qna" placeholder="궁금하신 점을 자유롭게 적어주세요"></textarea>
+  </div>
+
+  <div class="field">
+    <label for="f-etc">3. 기타사항</label>
+    <textarea id="f-etc" placeholder="자유롭게 적어주세요"></textarea>
+  </div>
+
+  <button class="copy-btn" id="copyBtn" type="button">작성한 신청양식 복사하기</button>
+
+</div>
+
+<script>
+// ① 글을 쓴 만큼 칸이 자동으로 늘어나게 하기
+function autoResize(el){
+  el.style.height = 'auto';
+  el.style.height = el.scrollHeight + 'px';
+}
+document.querySelectorAll('textarea').forEach(function(el){
+  el.addEventListener('input', function(){ autoResize(el); });
+  autoResize(el);
+});
+
+// ② 복사하기
+var FIELDS = [
+  ['1. 의뢰 옵션', 'f-option'],
+  ['2. Q&A', 'f-qna'],
+  ['3. 기타사항', 'f-etc']
+];
+
+function buildText(){
+  return FIELDS.map(function(item){
+    var el = document.getElementById(item[1]);
+    var value = el ? el.value.trim() : '';
+    return item[0] + '\n' + value;
+  }).join('\n\n');
+}
+
+// 아트머그 iframe 안에서는 기본 복사 기능이 막힐 수 있어서 보조 방법을 함께 둠
+function fallbackCopy(text){
+  var ta = document.createElement('textarea');
+  ta.value = text;
+  ta.setAttribute('readonly', '');
+  ta.style.position = 'fixed';
+  ta.style.left = '-9999px';
+  ta.style.top = '0';
+  ta.style.opacity = '0';
+  document.body.appendChild(ta);
+  try { ta.focus({preventScroll:true}); } catch(e){ ta.focus(); }
+  ta.select();
+  ta.setSelectionRange(0, ta.value.length);
+  var ok = false;
+  try { ok = document.execCommand('copy'); } catch(e){ ok = false; }
+  document.body.removeChild(ta);
+  return ok;
+}
+
+function showDone(btn){
+  var original = btn.getAttribute('data-original') || btn.textContent;
+  btn.setAttribute('data-original', original);
+  btn.textContent = '복사 완료!';
+  btn.classList.add('copied');
+  setTimeout(function(){
+    btn.textContent = original;
+    btn.classList.remove('copied');
+  }, 1600);
+}
+
+document.getElementById('copyBtn').addEventListener('click', function(){
+  var btn = this;
+  var text = buildText();
+  var x = window.scrollX, y = window.scrollY;
+
+  function success(){
+    window.scrollTo(x, y);
+    showDone(btn);
+  }
+  function failure(){
+    alert('복사에 실패했어요. 입력한 내용을 직접 선택해서 복사해주세요.');
+  }
+
+  if (navigator.clipboard && window.isSecureContext){
+    navigator.clipboard.writeText(text).then(success).catch(function(){
+      fallbackCopy(text) ? success() : failure();
+    });
+  } else {
+    fallbackCopy(text) ? success() : failure();
+  }
+});
+</script>
+</body>
+</html>
