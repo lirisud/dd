@@ -315,6 +315,17 @@
     margin-top:18px;
   }
   .application-actions .application-copy{margin-top:0}
+  .go-notice{
+    margin-top:12px;
+    padding:12px 14px;
+    border-radius:12px;
+    background:#eef0ff;
+    color:#1b2380;
+    font-size:13px;
+    line-height:1.6;
+  }
+  .go-notice[hidden]{display:none}
+  .go-notice a{display:inline-block;margin-top:4px;color:#1D2BF7;font-weight:700}
   .application-go{background:#1D2BF7}
   .application-go:hover{background:#1520c4}
   @media(max-width:520px){
@@ -485,6 +496,10 @@
         <button class="application-copy" id="copyBtn" type="button">작성한 내용 복사하기</button>
         <button class="application-copy application-go" id="goBtn" type="button">복사하고 문의창 열기</button>
       </div>
+      <div class="go-notice" id="goNotice" hidden>
+        문의창이 바로 열리지 않았어요. 작성하신 내용은 복사되어 있으니, 아래 링크로 문의 페이지를 열어 글쓰기 칸에 <b>Ctrl+V</b>로 붙여넣어 주세요.<br>
+        <a id="goNoticeLink" href="#" target="_blank" rel="noopener">문의 페이지 열기 ↗</a>
+      </div>
 
     </div>
   </div>
@@ -648,6 +663,9 @@ document.getElementById('goBtn').addEventListener('click', function(){
   var btn = this;
   var text = buildText();
   var x = window.scrollX, y = window.scrollY;
+  var notice = document.getElementById('goNotice');
+  document.getElementById('goNoticeLink').href = QNA_URL;
+  notice.hidden = true;
 
   // 복사는 항상 해둠 (연결이 안 될 때를 위한 보험)
   var copied = fallbackCopy(text);
@@ -661,16 +679,16 @@ document.getElementById('goBtn').addEventListener('click', function(){
       if (bridgeAck){
         flash(btn, '문의창이 열렸어요');
       } else {
-        // 연결 코드가 없으면 이 페이지 위에 글쓰기 창을 띄움
-        if (!copied){ copyFailed(); return; }
-        flash(btn, '복사 완료!');
-        openQna(btn);
+        // 연결 코드가 없거나 안 맞을 때: 사용자가 직접 누르는 링크로 안내
+        if (!copied) copyFailed();
+        notice.hidden = false;
       }
     }, 1200);
   } else {
+    // 이 페이지를 직접 연 경우: 복사 후 문의 페이지를 새 창으로 열기
     if (!copied){ copyFailed(); return; }
     flash(btn, '복사 완료!');
-    openQna(btn);
+    window.open(QNA_URL, '_blank');
   }
 });
 
