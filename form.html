@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>문의양식</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;800&family=Poppins:wght@800&display=swap');
+  :root{
+    --accent:#b48ec7;
+    --accent-dark:#1D2BF7;
+    --accent-soft:#f7f1fa;
+    --ink:#1f1a22;
+    --muted:#7a7080;
+    --line:#e8e8e8;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    margin:0;
+    background:#fff;
+    color:var(--ink);
+    font-family:'Noto Sans KR','Apple SD Gothic Neo','Malgun Gothic',sans-serif;
+    line-height:1.65;
+  }
+  .page{
+    width:min(920px,calc(100% - 28px));
+    margin:28px auto 60px;
+  }
+
+  /* 소개 영역 */
+  .hero{
+    position:relative;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:28px;
+    padding:44px 40px;
+    margin-bottom:20px;
+    border:1px solid var(--line);
+    border-radius:22px;
+    background:linear-gradient(135deg,#ffffff 0%,#f4f5fb 60%,#e9ebf5 100%);
+    overflow:hidden;
+  }
+  .hero-text{min-width:0;flex:1 1 auto}
+  .hero-pill{
+    display:inline-block;
+    padding:6px 14px;
+    border:0;
+    border-radius:999px;
+    color:#1D2BF7;
+    font-size:13px;
+    font-weight:500;
+    letter-spacing:.04em;
+    background:rgba(29,43,247,.08);
+  }
+  .hero-name{
+    margin:12px 0 10px;
+    color:#1D2BF7;
+    font-family:'Poppins','Noto Sans KR',sans-serif;
+    font-size:clamp(46px,9vw,84px);
+    font-weight:800;
+    line-height:1;
+    letter-spacing:-.02em;
+    text-shadow:0 4px 18px rgba(29,43,247,.18);
+  }
+  .hero-sub{font-size:14px;color:#555;margin:0 0 2px}
+  .hero-desc{font-size:14px;color:#555;margin:0;max-width:560px}
+  .hero-tags{display:flex;flex-wrap:wrap;gap:8px}
+  .hero-tag{
+    padding:5px 13px;
+    border:1px solid #bdbdc8;
+    border-radius:999px;
+    background:rgba(255,255,255,.7);
+    color:#555;
+    font-size:12px;
+  }
+  .hero-actions{margin-top:22px}
+  .hero-btn{
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    padding:13px 24px;
+    border-radius:999px;
+    background:#1D2BF7;
+    color:#fff;
+    font-size:14px;
+    font-weight:700;
+    text-decoration:none;
+    transition:background .18s ease,transform .18s ease;
+  }
+  .hero-btn:hover{background:#1520c4;transform:translateY(-1px)}
+  #inquiry{scroll-margin-top:16px}
+  .hero-circle{
+    flex:0 0 auto;
+    width:230px;
+    height:230px;
+    border-radius:50%;
+    padding:9px;
+    background:linear-gradient(145deg,#ffffff,#c9ccd8 55%,#f4f5fa);
+    box-shadow:0 10px 30px rgba(60,70,120,.15);
+  }
+  .hero-circle-inner{
+    width:100%;
+    height:100%;
+    border-radius:50%;
+    background:#fff;
+    overflow:hidden;
+  }
+  .hero-circle-inner img{width:100%;height:100%;object-fit:contain;display:block}
+  @media(max-width:720px){
+    .hero{flex-direction:column-reverse;align-items:flex-start;padding:26px 20px;gap:18px;border-radius:17px}
+    .hero-circle{width:130px;height:130px;padding:6px;align-self:flex-end}
+    .hero-desc{font-size:13px}
+  }
+
+  /* 협업 작가 */
+  .collab-kicker{
+    font-size:12px;
+    font-weight:800;
+    letter-spacing:.14em;
+    color:#1D2BF7;
+    margin-bottom:6px;
+  }
+  .collab h2{margin:0}
+  .collab-grid{
+    display:grid;
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    gap:16px;
+    margin-top:20px;
+  }
+  .collab-card{
+    width:100%;
+    max-width:320px;
+    border:1px solid #e0e0e6;
+    border-radius:18px;
+    background:#fff;
+    overflow:hidden;
+  }
+  .collab-img{
+    aspect-ratio:1/1;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:#e9ecfd;
+    color:#6b74d6;
+    font-size:14px;
+  }
+  .collab-img img,.collab-img video{width:100%;height:100%;object-fit:cover;object-position:center 35%;display:block}
+  .collab-info{padding:18px}
+  .collab-name{margin:0 0 10px;font-size:18px;font-weight:700}
+  .collab-benefit{
+    display:inline-block;
+    padding:8px 16px;
+    border-radius:999px;
+    background:#1D2BF7;
+    color:#fff;
+    font-size:14px;
+    font-weight:500;
+  }
+  .collab-namerow{display:flex;align-items:center;flex-wrap:wrap;gap:10px}
+  .collab-namerow .collab-name{margin:0}
+  .collab-chip{
+    display:inline-block;
+    padding:5px 12px;
+    border-radius:999px;
+    background:#e9ecf5;
+    color:#1f2230;
+    font-size:12px;
+    font-weight:700;
+    white-space:nowrap;
+  }
+  .collab-btn{
+    display:inline-block;
+    margin-top:14px;
+    padding:10px 20px;
+    border-radius:10px;
+    background:#1D2BF7;
+    color:#fff;
+    font-size:14px;
+    font-weight:700;
+    text-decoration:none;
+    transition:background .18s ease;
+  }
+  .collab-btn:hover{background:#1520c4}
+  .collab-link{
+    display:block;
+    margin-top:14px;
+    font-size:13px;
+    font-weight:700;
+    color:#1D2BF7;
+    text-decoration:none;
+  }
+  .collab-link.off{color:#555}
+  @media(max-width:720px){
+    .collab-grid{grid-template-columns:1fr;gap:12px}
+    .collab-info{padding:15px}
+    .collab-name{font-size:16px}
+    .collab-benefit{font-size:13px}
+  }
+
+  /* 칸(카드) 나누기 */
+  .card-section{
+    margin-bottom:20px;
+    padding:32px;
+    border:1px solid var(--line);
+    border-radius:22px;
+    background:#fff;
+    box-shadow:0 8px 26px rgba(0,0,0,.035);
+  }
+  .card-section .application-box{
+    border:0;
+    border-radius:0;
+    box-shadow:none;
+    background:transparent;
+    overflow:visible;
+  }
+  .card-section .application-content{padding:0}
+  @media(max-width:720px){
+    .card-section{padding:20px 16px;border-radius:17px;margin-bottom:14px}
+  }
+
+  /* 제목 영역 */
+  .section-head{margin-bottom:22px}
+  .kicker{
+    font-size:12px;
+    font-weight:800;
+    letter-spacing:.14em;
+    color:var(--accent-dark);
+    margin-bottom:6px;
+  }
+  h2{
+    font-size:27px;
+    letter-spacing:-1px;
+    margin:0;
+  }
+  .desc{
+    font-size:14px;
+    color:var(--muted);
+    margin-top:6px;
+  }
+
+  /* 바깥 큰 카드 */
+  .application-box{
+    border:1px solid var(--line);
+    border-radius:22px;
+    background:#fff;
+    box-shadow:0 8px 26px rgba(0,0,0,.035);
+    overflow:hidden;
+  }
+  .application-content{padding:24px}
+
+  /* 안내 박스 */
+  .application-alert{
+    display:flex;
+    gap:10px;
+    align-items:flex-start;
+    margin-bottom:20px;
+    padding:13px 15px;
+    border-radius:12px;
+    background:#F6F7FF;
+    color:#2B2E4A;
+    font-size:13px;
+    font-weight:500;
+  }
+  .application-alert svg{
+    flex:0 0 auto;
+    width:20px;
+    height:20px;
+    margin-top:1px;
+    color:#8189FF;
+  }
+
+  /* 항목 카드 */
+  .application-list{display:grid;gap:14px}
+  .application-item{
+    border:1px solid var(--line);
+    border-radius:14px;
+    padding:16px 17px;
+    background:#fff;
+  }
+  .application-item label{
+    display:block;
+    margin-bottom:8px;
+    font-size:15px;
+    font-weight:800;
+  }
+  .application-item textarea{
+    display:block;
+    width:100%;
+    min-height:100px;
+    padding:12px 13px;
+    border:1px solid #dcdcdc;
+    border-radius:10px;
+    background:#fafafa;
+    color:#222;
+    font-family:inherit;
+    font-size:14px;
+    line-height:1.65;
+    outline:none;
+    resize:none;      /* 글을 쓴 만큼 자동으로 늘어남 */
+    overflow:hidden;
+  }
+  .application-item textarea:focus{
+    border-color:var(--accent);
+    background:#fff;
+    box-shadow:0 0 0 3px rgba(180,142,199,.18);
+  }
+
+  .application-actions{
+    display:grid;
+    grid-template-columns:1fr;
+    gap:10px;
+    margin-top:18px;
+  }
+  .application-actions .application-copy{margin-top:0}
+  .go-notice{
+    margin-top:12px;
+    padding:12px 14px;
+    border-radius:12px;
+    background:#eef0ff;
+    color:#1b2380;
+    font-size:13px;
+    line-height:1.6;
+  }
+  .go-notice[hidden]{display:none}
+  .go-notice a{display:inline-block;margin-top:4px;color:#1D2BF7;font-weight:700}
+  .application-go{background:#1D2BF7}
+  .application-go:hover{background:#1520c4}
+  @media(max-width:520px){
+    .application-actions{grid-template-columns:1fr}
+  }
+
+  /* 문의 글쓰기 창 (페이지 안에 겹쳐서 띄움) */
+  .qna-modal{
+    position:absolute;
+    left:50%;
+    z-index:9999;
+    display:none;
+    flex-direction:column;
+    width:min(900px,calc(100% - 24px));
+    transform:translateX(-50%);
+    border:1px solid #d5d8e6;
+    border-radius:16px;
+    background:#fff;
+    box-shadow:0 18px 50px rgba(20,25,60,.28);
+    overflow:hidden;
+  }
+  .qna-modal.open{display:flex}
+  .qna-head{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:12px 16px;
+    background:#1d1d1d;
+    color:#fff;
+  }
+  .qna-title{font-size:14px;font-weight:700}
+  .qna-tools{display:flex;align-items:center;gap:14px}
+  .qna-tools a{color:#cfd3ff;font-size:12px;text-decoration:underline}
+  .qna-close{
+    width:30px;height:30px;
+    border:0;border-radius:50%;
+    background:rgba(255,255,255,.15);
+    color:#fff;font-size:20px;line-height:1;cursor:pointer;
+  }
+  .qna-close:hover{background:rgba(255,255,255,.3)}
+  .qna-hint{
+    padding:10px 16px;
+    background:#eef0ff;
+    color:#1b2380;
+    font-size:13px;
+    line-height:1.55;
+  }
+  .qna-modal iframe{
+    display:block;
+    width:100%;
+    height:480px;
+    border:0;
+    background:#fff;
+  }
+  @media(max-width:720px){
+    .qna-modal{width:calc(100% - 12px);border-radius:13px}
+    .qna-modal iframe{height:440px}
+    .qna-hint{font-size:12px}
+  }
+
+  /* 복사 버튼 */
+  .application-copy{
+    margin-top:18px;
+    width:100%;
+    min-height:48px;
+    border:0;
+    border-radius:11px;
+    padding:12px 16px;
+    background:#1d1d1d;
+    color:#fff;
+    font-family:inherit;
+    font-size:14px;
+    font-weight:800;
+    cursor:pointer;
+    transition:background .18s ease;
+  }
+  .application-copy:hover{background:#3a3a3a}
+  .application-copy.copied{background:var(--accent-dark)}
+
+  @media(max-width:720px){
+    .page{width:calc(100% - 16px);margin-top:14px}
+    h2{font-size:22px}
+    .desc{font-size:12px}
+    .application-box{border-radius:17px}
+    .application-content{padding:14px}
+    .application-alert{padding:11px 12px;font-size:12px;margin-bottom:13px}
+    .application-list{gap:10px}
+    .application-item{padding:13px;border-radius:12px}
+    .application-item label{font-size:14px}
+    .application-item textarea{font-size:13px}
+  }
+  .page{margin-top:8px}
+</style>
+</head>
+<body>
+<div class="page">
+
+
+  <section class="card-section" id="inquiry">
+  <div class="section-head">
+    <div class="kicker">INQUIRY</div>
+    <h2>문의양식</h2>
+    <div class="desc">아래 칸에 직접 내용을 작성해주세요.</div>
+  </div>
+
+  <div class="application-box">
+    <div class="application-content">
+
+      <div class="application-alert">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><line x1="12" y1="11" x2="12" y2="16"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+        <div>
+          내용을 자세하게 적어주실수록 원하시는 느낌에 가깝게 작업할 수 있습니다!
+        </div>
+      </div>
+
+      <div class="application-list">
+        <div class="application-item">
+          <label for="f-use">1. 사용 용도</label>
+          <textarea id="f-use" style="min-height:64px" placeholder="예) 치지직 스트리밍 / 활동명"></textarea>
+        </div>
+
+        <div class="application-item">
+          <label for="f-option">2. 신청 옵션</label>
+          <textarea id="f-option" style="min-height:64px" placeholder="예) 전신, 표정(눈물/화남), 포즈(마이크 등)"></textarea>
+        </div>
+
+        <div class="application-item">
+          <label for="f-work">3. 작업 내용</label>
+          <textarea id="f-work" placeholder="캐릭터 외관 / 얼굴, 눈매, 체형, 헤어 등 전체적인 외형 설명을 적어주세요.&#10;구체적인 캐릭터 자료가 있으시면 문의하실 때 함께 첨부해주세요."></textarea>
+        </div>
+
+        <div class="application-item">
+          <label for="f-request">4. 요청사항</label>
+          <textarea id="f-request" placeholder="이외 다른 요청사항을 적어주세요."></textarea>
+        </div>
+      </div>
+
+      <div class="application-actions">
+        <button class="application-copy application-go" id="goBtn" type="button">작성한 내용으로 문의하기</button>
+      </div>
+      <div class="go-notice" id="goNotice" hidden>
+        문의창이 바로 열리지 않았어요. 작성하신 내용은 복사되어 있으니, 아래 링크로 문의 페이지를 열어 글쓰기 칸에 <b>Ctrl+V</b>로 붙여넣어 주세요.<br>
+        <a id="goNoticeLink" href="#" target="_blank" rel="noopener">문의 페이지 열기 ↗</a>
+      </div>
+
+    </div>
+  </div>
+  </section>
+
+</div>
+
+
+<script>
+var embedded = (window.parent !== window);
+var QNA_URL = 'https://artmug.kr/php/qna_write.php?number=31480';
+var bridgeAck = false;
+
+function autoResize(el){
+  if(!el.value){ el.style.height = ''; return; }
+  el.style.height = 'auto';
+  el.style.height = el.scrollHeight + 'px';
+}
+function resizeAll(){
+  document.querySelectorAll('textarea').forEach(autoResize);
+}
+document.querySelectorAll('textarea').forEach(function(el){
+  el.addEventListener('input', function(){ autoResize(el); });
+  autoResize(el);
+});
+window.addEventListener('resize', resizeAll);
+window.addEventListener('load', resizeAll);
+
+var FIELDS = [
+  ['1. 사용 용도', 'f-use'],
+  ['2. 신청 옵션', 'f-option'],
+  ['3. 작업 내용', 'f-work'],
+  ['4. 요청사항', 'f-request']
+];
+
+function buildText(){
+  return FIELDS.map(function(item){
+    var el = document.getElementById(item[1]);
+    var value = el ? el.value.trim() : '';
+    return item[0] + '\n' + value;
+  }).join('\n\n');
+}
+
+function fallbackCopy(text){
+  var ta = document.createElement('textarea');
+  ta.value = text;
+  ta.setAttribute('readonly', '');
+  ta.style.position = 'fixed';
+  ta.style.left = '-9999px';
+  ta.style.top = '0';
+  ta.style.opacity = '0';
+  document.body.appendChild(ta);
+  try { ta.focus({preventScroll:true}); } catch(e){ ta.focus(); }
+  ta.select();
+  ta.setSelectionRange(0, ta.value.length);
+  var ok = false;
+  try { ok = document.execCommand('copy'); } catch(e){ ok = false; }
+  document.body.removeChild(ta);
+  return ok;
+}
+
+function flash(btn, msg){
+  var original = btn.getAttribute('data-original') || btn.textContent;
+  btn.setAttribute('data-original', original);
+  btn.textContent = msg;
+  btn.classList.add('copied');
+  setTimeout(function(){
+    btn.textContent = original;
+    btn.classList.remove('copied');
+  }, 2200);
+}
+
+function copyFailed(){
+  alert('복사에 실패했어요. 입력한 내용을 직접 선택해서 복사해주세요.');
+}
+
+window.addEventListener('message', function(e){
+  var d = e.data;
+  if (e.source !== window.parent || !d) return;
+  if (d.type === 'ATCHI_QNA_OK') bridgeAck = true;
+});
+
+document.getElementById('goBtn').addEventListener('click', function(){
+  var btn = this;
+  var text = buildText();
+  var x = window.scrollX, y = window.scrollY;
+  var notice = document.getElementById('goNotice');
+  document.getElementById('goNoticeLink').href = QNA_URL;
+  notice.hidden = true;
+
+  var copied = fallbackCopy(text);
+  window.scrollTo(x, y);
+
+  if (embedded){
+    bridgeAck = false;
+    window.parent.postMessage({ type:'ATCHI_QNA', text:text }, '*');
+    flash(btn, '문의창을 여는 중…');
+    setTimeout(function(){
+      if (bridgeAck){
+        flash(btn, '문의창이 열렸어요');
+      } else {
+        if (!copied) copyFailed();
+        notice.hidden = false;
+      }
+    }, 1200);
+  } else {
+    if (!copied){ copyFailed(); return; }
+    flash(btn, '복사 완료!');
+    window.open(QNA_URL, '_blank');
+  }
+});
+
+function sendHeight(){
+  if (!embedded) return;
+  var pg = document.querySelector('.page');
+  if (!pg) return;
+  var h = Math.ceil(pg.getBoundingClientRect().bottom + window.pageYOffset + 70);
+  window.parent.postMessage({ type:'ATCHI_HEIGHT', height:h }, '*');
+}
+window.addEventListener('load', sendHeight);
+window.addEventListener('resize', sendHeight);
+if (window.ResizeObserver){
+  new ResizeObserver(sendHeight).observe(document.querySelector('.page'));
+}
+setTimeout(sendHeight, 600);
+setTimeout(sendHeight, 2000);
+</script>
+</body>
+</html>
